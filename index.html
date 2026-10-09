@@ -93,8 +93,12 @@ function profile(edit){const p=me()||{};
    {k:'bd',l:L('geburtsdatum (optional)','birth date (optional)'),type:'date',v:p.bd},{k:'pass',l:L('reisepass-nr. (optional)','passport no. (optional)'),v:p.pass},{k:'pe',l:L('pass gültig bis (optional)','passport expires (optional)'),type:'date',v:p.pe},
    ],
    v=>{if(!v.first||!v.last)return false;putM(v)},!edit)}
+async function saveTrip(v){const id=uidn(),trip={t:'trip',name:v.name,ort:v.ort,s:v.s,e:v.e,av:v.av,nm:'short',c:Date.now()},mk='m_'+id+'_'+uid,mem={t:'mem',T:id,u:uid,role:'travellead',c:Date.now()};
+  if(db){toast(L('reise wird gespeichert …','saving trip …'));const a=await db.collection('items').doc(id).set(trip);if(a!==true){toast(L('fehler beim speichern: ','save error: ')+(window.__lastErr||'?'));return}
+    const b=await db.collection('items').doc(mk).set(mem);if(b!==true){toast(L('fehler bei der mitgliedschaft: ','membership error: ')+(window.__lastErr||'?'));return}toast('')}
+  S.i[id]=trip;S.i[mk]=mem;cur=id;tab='home';render()}
 function newTrip(){form(L('neue reise','new travel'),[{k:'name',l:'name'},{k:'ort',l:L('ort (stadt, land oder insel)','place (city, country or island)')},{k:'s',l:L('start','start'),type:'date'},{k:'e',l:L('ende','end'),type:'date'},{k:'av',l:L('titelbild (emoji)','cover (emoji)'),v:'🌴'}],
-  v=>{if(!v.name||!v.ort||!v.s||!v.e)return false;const id=uidn();put(id,{t:'trip',name:v.name,ort:v.ort,s:v.s,e:v.e,av:v.av,nm:'short',c:Date.now()});put('m_'+id+'_'+uid,{t:'mem',T:id,u:uid,role:'travellead',c:Date.now()});cur=id;tab='home'})}
+  v=>{if(!v.name||!v.ort||!v.s||!v.e)return false;saveTrip(v)})}
 function joinFlow(id){const t=S.i[id];if(!t||t.t!=='trip')return;form(L('reise beitreten: ','join: ')+t.name,[],()=>{put('m_'+id+'_'+uid,{t:'mem',T:id,u:uid,role:'traveller',c:Date.now()});cur=id;tab='home';history.replaceState(null,'',location.pathname)})}
 /* punkte / mvp */
 function points(){const p={},w=W();mems().forEach(m=>{const c=cnt(m.u);p[m.u]=Object.keys(c).reduce((a,k)=>a+c[k]*w[k],0)});return p}
@@ -211,7 +215,7 @@ const ADD={
  fin:()=>subs.fin==='kalkulation'?addCalc():form(L('ausgabe','expense'),[{k:'title',l:L('wofür?','what for?')},{k:'amt',l:L('betrag (€)','amount (€)'),type:'number'},{k:'cat',l:L('kostenart','category'),type:'select',o:cats().map(c=>[c,c])},{k:'act',l:L('aktivität (optional)','activity (optional)'),type:'select',o:[['','–'],...list('act').filter(a=>ast(a)!=='prop').map(a=>[a.id,a.title])]},{k:'payer',l:L('bezahlt von','paid by'),type:'select',v:uid,o:mo()},{k:'split',l:L('aufteilen auf','split between'),type:'multi',o:mo()},{k:'req',l:L('zahlung von mitreisenden anfordern?','request payment from others?'),type:'select',o:[['0',L('nein','no')],['1',L('ja','yes')]]}],
   v=>{const a=parseFloat(String(v.amt).replace(',','.'));if(!v.title||!(a>0)||!v.split.length)return false;P('exp',{title:v.title,amt:a,cat:v.cat,act:v.act,payer:v.payer,split:v.split,req:v.req==='1'})})
 };
-const VER='1.2';
+const VER='1.3';
 function render(){render0();arrows();tagCards();$('#ft').innerHTML=`<a href="#" data-a="imp" class="mu">${L('impressum','imprint')} · travelite v${VER}</a>`}
 function render0(){
   if(!ready)return;
@@ -262,7 +266,7 @@ function shopView(){const D=list('shopdate').sort((a,b)=>(a.when||'').localeComp
  (it.map(x=>`<div class="card row"><div class="row wr"><button class="chk ${x.done?'on':''}" data-a="buy" data-id="${x.id}">${x.done?'✓':''}</button><div><div class="${x.done?'done':''}">${esc(x.title)} ${x.qty?`<span class="mu">(${esc(x.qty)})</span>`:''}</div><div class="mu">${x.sl&&curSL==='all'&&S.i[x.sl]?`<span class="tag">${esc(S.i[x.sl].name)}</span>`:''}${x.done?L('gekauft von ','bought by ')+esc(dn(x.doneBy)):esc(dn(x.by))}</div></div></div>${own(x)?X(x.id):''}</div>`).join('')||E(L('einkaufsliste leer','shopping list empty')))}
 function lotShow(){const R=list('room').filter(r=>r.acc===acc);$('#sheet').innerHTML=`<div class="row"><h3 style="margin:0">🎲 ${L('vorschlag zimmerverteilung','room proposal')}</h3><button class="btn s" id="fx">✕</button></div>`+R.map(r=>`<div class="card"><b>${esc(r.name)}</b> <span class="mu">${(r.who||[]).length+(LP[r.id]||[]).length}/${r.beds}</span><div class="mu">${[...(r.who||[]).map(u=>esc(dn(u))),...(LP[r.id]||[]).map(u=>'<span class="gold">+ '+esc(dn(u))+'</span>')].join(', ')||'–'}</div></div>`).join('')+`<div class="row wr"><button class="btn" data-a="lotno">${L('ablehnen','reject')}</button><button class="btn" data-a="lotre">🎲 ${L('neu würfeln','reroll')}</button><button class="btn p" data-a="lotok">${L('annehmen','accept')}</button></div>`;$('#modal').classList.add('on');$('#fx').onclick=close}
 const ACT={
- imp:()=>{$('#sheet').innerHTML=`<div class="row"><h3 style="margin:0">${L('impressum & version','imprint & version')}</h3><button class="btn s" id="fx">✕</button></div><p>travelite · ${L('version','version')} ${VER}</p><p class="mu">${L('angaben gemäß § 5 ddg (vom betreiber zu ergänzen): name, anschrift, e-mail.','information pursuant to § 5 ddg (to be completed by the operator): name, address, email.')}</p>`;$('#modal').classList.add('on');$('#fx').onclick=close},
+ imp:()=>{$('#sheet').innerHTML=`<div class="row"><h3 style="margin:0">${L('impressum & version','imprint & version')}</h3><button class="btn s" id="fx">✕</button></div><p>travelite · ${L('version','version')} ${VER}</p><p class="mu" style="white-space:pre-wrap">${window.IMPRINT?esc(window.IMPRINT):L('angaben gemäß § 5 ddg (vom betreiber zu ergänzen): name, anschrift, e-mail.','information pursuant to § 5 ddg (to be completed by the operator): name, address, email.')}</p>`;$('#modal').classList.add('on');$('#fx').onclick=close},
  dis:id=>{const x=S.i[id],a=x.dis||[];U(id,{dis:a.includes(uid)?a.filter(u=>u!==uid):[...a,uid],likes:(x.likes||[]).filter(u=>u!==uid)})},
  edit:id=>{const x=S.i[id],f=EF[x.t];if(!f)return;const fs=f(x);form(L('bearbeiten','edit'),fs,v=>{if(!v[fs[0].k])return false;const d={...v};['cost','amt'].forEach(k=>{if(k in d)d[k]=parseFloat(String(d[k]).replace(',','.'))||0});['beds','qty'].forEach(k=>{if(k in d)d[k]=parseInt(d[k])||1});if('split' in d&&!d.split.length)return false;U(id,d);detail(id);return false})},
  edittrip:id=>{const t=S.i[id],m=S.i['m_'+id+'_'+uid];if(!m||m.role!=='travellead')return;form(L('reise bearbeiten','edit travel'),[{k:'name',l:'name',v:t.name},{k:'ort',l:L('ort','place'),v:t.ort},{k:'s',l:L('start','start'),type:'date',v:t.s},{k:'e',l:L('ende','end'),type:'date',v:t.e},{k:'av',l:L('titelbild (emoji)','cover (emoji)'),v:t.av}],v=>{if(!v.name||!v.s||!v.e)return false;U(id,v)})},
@@ -321,27 +325,33 @@ document.addEventListener('change',e=>{const t=e.target,a=t.dataset.a;if(!a)retu
 document.querySelectorAll('.navw nav').forEach(n=>n.addEventListener('scroll',arrows));addEventListener('resize',arrows);
 window.__start=init;
 </script>
+<div id="toast" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:30;background:#2a1414;border:1px solid #e0605e;color:#ffd7d6;padding:12px 14px;border-radius:12px;font-size:14px"></div>
 <div id="auth" style="display:none"><form id="af"><div class="logo" style="font-size:34px;text-align:center;margin-bottom:18px"><b>trav</b><i>elite</i></div>
 <label>e-mail</label><input id="ae" type="email" autocomplete="email" required><label>passwort</label><input id="ap" type="password" autocomplete="current-password" minlength="6" required>
-<div class="row"><button class="btn p" type="submit" id="ain">anmelden</button><button class="btn" type="button" id="aup">registrieren</button></div><p id="am"></p></form></div>
+<div class="row"><button class="btn p" type="submit" id="ain">anmelden</button><button class="btn" type="button" id="aup">registrieren</button></div><p id="am"></p></form><div style="position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:12px;color:#8b8b94"><div id="aimpt" style="display:none;margin:0 20px 8px;white-space:pre-wrap"></div><a href="#" id="aimp" style="color:#8b8b94">impressum</a> · travelite v<span id="aver"></span></div></div>
 <script>
 /* >>> hier deine werte aus supabase (project settings > api) eintragen <<< */
 const SB_URL='https://rdrvjjtzjmyucoukcrwi.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkcnZqanR6am15dWNvdWtjcndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MzIzMzQsImV4cCI6MjEwNzEwODMzNH0.x5-zbz_aFk7_rTtBYZhfd5R5njFdNuG8-dS-hYhEjro';
+window.IMPRINT='';/* hier deinen impressums-text eintragen: name, anschrift, e-mail */
+window.toast=m=>{const t=document.getElementById('toast');clearTimeout(window.__tt);if(!m){t.style.display='none';return}t.textContent=m;t.style.display='block';window.__tt=setTimeout(()=>t.style.display='none',10000)};
+window.alert=m=>window.toast(String(m));
 (async()=>{
   const $a=id=>document.getElementById(id),sb=supabase.createClient(SB_URL,SB_KEY),box=$a('auth'),msg=t=>$a('am').textContent=t,cred=()=>{const email=$a('ae').value.trim(),password=$a('ap').value;if(!email.includes('@')||password.length<6){msg('bitte gültige e-mail und ein passwort mit mindestens 6 zeichen eingeben.');return null}return{email,password}};
   const begin=session=>{
     box.style.display='none';const uid=session.user.id,email=session.user.email;
-    let q=Promise.resolve();const enq=f=>{q=q.then(f).catch(e=>console.error(e));return q};
+    const loaders={};let q=Promise.resolve();const enq=f=>{q=q.then(f).catch(e=>console.error(e));return q};
     window.claude={use:async k=>k==='user'?{id:async()=>uid,me:async()=>({name:'',email})}:{collection:n=>({
-      onSnapshot:cb=>{const load=async()=>{const {data,error}=await sb.from(n).select('*');if(error){console.error(error);return}cb({docs:data.map(r=>({id:r.id,data:()=>r.data}))})};load();let tm;
-        sb.channel(n+'-ch').on('postgres_changes',{event:'*',schema:'public',table:n},()=>{clearTimeout(tm);tm=setTimeout(load,150)}).subscribe()},
+      onSnapshot:cb=>{let seq=0,tm;const load=async()=>{const my=++seq,{data,error}=await sb.from(n).select('*');if(error){console.error(error);return}if(my!==seq)return;cb({docs:data.map(r=>({id:r.id,data:()=>r.data}))})};loaders[n]=()=>{clearTimeout(tm);tm=setTimeout(load,150)};load();
+        sb.channel(n+'-ch').on('postgres_changes',{event:'*',schema:'public',table:n},()=>loaders[n]()).subscribe()},
       doc:id=>({
         set:d=>enq(async()=>{const row=n==='items'?{id,trip:d.T||id,data:d}:{id,data:d};
           let r=await sb.from(n).update(n==='items'?{data:d,trip:row.trip}:{data:d}).eq('id',id).select('id');
           if(!r.error&&(!r.data||!r.data.length))r=await sb.from(n).insert(row);
-          if(r.error){console.error(r.error);alert(r.error.message)}}),
-        delete:()=>enq(async()=>{const {error}=await sb.from(n).delete().eq('id',id);if(error){console.error(error);alert(error.message)}})})})}};
+          if(r.error){console.error(r.error);window.__lastErr=r.error.message;alert(r.error.message);return false}
+          (loaders[n]||(()=>0))();return true}),
+        delete:()=>enq(async()=>{const {error}=await sb.from(n).delete().eq('id',id);if(error){console.error(error);window.__lastErr=error.message;alert(error.message);return false}(loaders[n]||(()=>0))();return true})})})}};
     window.__start()};
+  $a('aver').textContent=VER;$a('aimp').onclick=e=>{e.preventDefault();const t=$a('aimpt');t.textContent=window.IMPRINT||'anbieter / verantwortlich: [bitte name, anschrift und e-mail ergänzen]';t.style.display=t.style.display==='none'?'block':'none'};
   const {data:{session}}=await sb.auth.getSession();
   if(session)return begin(session);
   box.style.display='flex';
