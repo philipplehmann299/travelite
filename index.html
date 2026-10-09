@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8"><title>Travelite</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#0a0a0b;--c1:#151517;--c2:#1f1f22;--ln:#2e2e32;--tx:#e6e6ea;--mu:#8b8b94;--gold:#dcab2a;--sil:#c4c6cc;--ok:#5fbf7f;--bad:#e0605e;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 -apple-system,Segoe UI,Roboto,sans-serif}
+h2,h3,nav button,.btn,label,.fab,.tag,.lc,header button{text-transform:lowercase}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--ln);display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+.logo{font-size:23px;font-weight:800}.logo b{background:linear-gradient(90deg,#9a9ca3,#f2f3f6,#b4b6bd);-webkit-background-clip:text;background-clip:text;color:transparent}.logo i{font-style:normal;background:linear-gradient(90deg,#a8821c,#f5da7a,#c79a22);-webkit-background-clip:text;background-clip:text;color:transparent}
+header button{background:var(--c2);border:1px solid var(--ln);color:var(--tx);border-radius:18px;padding:6px 11px;font-size:13px;margin-left:6px}
+nav{display:flex;overflow-x:auto;gap:6px;padding:9px 12px;border-bottom:1px solid var(--ln);scrollbar-width:none}
+nav button{flex:0 0 auto;background:var(--c1);border:1px solid var(--ln);color:var(--mu);padding:7px 12px;border-radius:16px;font-size:14px}
+nav button.on{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+nav.sub button{font-size:12px;padding:5px 10px}
+#side{position:fixed;top:calc(58px + env(safe-area-inset-top,0px));bottom:0;left:0;width:200px;background:var(--c1);border-right:1px solid var(--ln);overflow-y:auto;padding:8px;transform:translateX(-101%);transition:transform .2s;z-index:6;display:flex;flex-direction:column;gap:3px}
+#side.open{transform:none}#side button{background:none;border:0;color:var(--mu);text-align:left;padding:10px 12px;border-radius:10px;font-size:14px;text-transform:lowercase}
+#side button.on{background:var(--c2);color:var(--gold);font-weight:700}#side button.sb{padding:6px 12px 6px 28px;font-size:13px}
+@media(min-width:700px){body.sh{padding-left:200px}}
+.s-ok{color:var(--ok)!important;border-color:var(--ok)!important}.s-wa{color:var(--gold)!important;border-color:var(--gold)!important}.s-bad{color:var(--bad)!important;border-color:var(--bad)!important}
+.card[data-d],.card[data-go]{cursor:pointer}
+header button:empty{display:none}nav:empty{display:none}.navw{position:relative;border-bottom:1px solid var(--ln)}.navw:has(nav:empty){display:none}.navw nav{border:0}
+.ar{display:none;position:absolute;top:0;bottom:0;width:28px;align-items:center;justify-content:center;font-size:24px;color:var(--gold);pointer-events:none}
+.ar.l{left:0;background:linear-gradient(90deg,var(--bg),transparent)}.ar.r{right:0;background:linear-gradient(270deg,var(--bg),transparent)}.hl .l,.hr .r{display:flex}
+details summary{cursor:pointer;color:var(--sil);list-style:none}.btn:disabled{opacity:.4}
+main{flex:1;width:100%;padding:12px 14px 20px;max-width:640px;margin:0 auto}
+h2{font-size:12px;letter-spacing:1.5px;color:var(--sil);margin:18px 0 8px}
+.card{background:var(--c1);border:1px solid var(--ln);border-radius:14px;padding:11px 14px;margin-bottom:9px}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between}.wr{flex-wrap:wrap;justify-content:flex-start}
+.mu{color:var(--mu);font-size:13px}.gold{color:var(--gold)}.ok{color:var(--ok)}.bad{color:var(--bad)}
+.btn{background:var(--c2);color:var(--tx);border:1px solid var(--ln);border-radius:10px;padding:8px 12px;font-size:13px}.btn.p{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}.btn.s{padding:4px 9px;font-size:12px}
+.fab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#111;border:0;border-radius:28px;padding:14px 20px;font-weight:800;box-shadow:0 4px 18px #000a}
+.tag{display:inline-block;background:var(--c2);border:1px solid var(--ln);border-radius:8px;padding:1px 7px;font-size:11px;color:var(--sil);margin-right:4px}
+.chk{width:22px;height:22px;border-radius:7px;border:2px solid var(--mu);background:none;color:#111;font-weight:900;flex:0 0 auto}.chk.on{background:var(--ok);border-color:var(--ok)}
+.done{text-decoration:line-through;color:var(--mu)}.big{font-size:34px;font-weight:800;color:var(--gold)}.pts{font-size:20px;font-weight:800;color:var(--gold)}
+#modal{display:none;position:fixed;inset:0;background:#000b;z-index:9;align-items:flex-end;justify-content:center}#modal.on{display:flex}
+#sheet{background:var(--c1);border:1px solid var(--ln);border-radius:18px 18px 0 0;width:100%;max-width:640px;max-height:90vh;overflow:auto;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+label{display:block;font-size:12px;color:var(--mu);margin:10px 0 4px}
+input,select,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--ln);border-radius:10px;padding:10px;font:inherit}
+.ck{display:flex;gap:8px;align-items:center;padding:3px 0}.ck input{width:auto}
+.empty{text-align:center;color:var(--mu);padding:22px 0}a{color:var(--gold)}
+.msg{background:var(--c2);border-radius:12px;padding:7px 11px;margin-bottom:7px;max-width:85%}.msg.me{margin-left:auto;background:#3a3216}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>#auth{position:fixed;inset:0;z-index:20;background:#0a0a0b;display:flex;align-items:center;justify-content:center;padding:20px}#auth form{width:100%;max-width:340px}#auth .row{margin-top:14px}#auth p{color:#8b8b94;font-size:13px;min-height:18px}</style></head><body>
+<header><div style="display:flex;align-items:center"><button id="bs" style="margin:0 8px 0 0"></button><div class="logo"><b>trav</b><i>elite</i></div></div><div><button id="bt"></button><button id="bl"></button><button id="bp"></button></div></header>
+<div class="navw"><nav id="nav"></nav><span class="ar l">‹</span><span class="ar r">›</span></div><nav id="snav" style="display:none"></nav><aside id="side"></aside><main id="app"></main><div id="fabw"></div>
+<footer id="ft" style="text-align:center;margin-top:auto;padding:16px 0 90px;font-size:12px"></footer><div id="modal"><div id="sheet"></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let lang='de';try{lang=localStorage.getItem('tl')||'de'}catch(e){}
+const L=(d,e)=>lang==='en'?e:d;
+let S={m:{},i:{}},uid='local',vu={},db=null,ready=false,cur=null,tab='home',subs={transfer:'reisen',wohnen:'unterkunft',act:'vorschlaege',todo:'meine',rank:'score',team:'team',fin:'ausgaben'},pkAll=false,tf='all',sideOpen=innerWidth>=700,sc={},LP={},curSL='all',acc=null;
+const uidn=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36);
+const prof=u=>S.m[u]||{},me=()=>S.m[uid],trip=()=>S.i[cur]||{},mrec=u=>S.i['m_'+cur+'_'+u];
+const lead=()=>{const m=mrec(uid);return !!m&&m.role==='travellead'};
+const dn=u=>{const p=prof(u);if(!p.first)return'?';return trip().nm==='alias'&&p.alias?p.alias:p.first+' '+(p.last||'').slice(0,1)+'.'};
+const av=u=>esc(prof(u).av||'🙂');
+const list=t=>Object.entries(S.i).filter(([,v])=>v.t===t&&v.T===cur).map(([id,v])=>({id,...v})).sort((a,b)=>(a.c||0)-(b.c||0));
+const mems=()=>list('mem');const mo=()=>mems().map(m=>[m.u,dn(m.u)]);
+const eur=n=>(Math.round(n*100)/100).toLocaleString(lang==='en'?'en-US':'de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const dt=v=>v?new Date(v).toLocaleString(lang==='en'?'en-GB':'de-DE',{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+const dd=v=>v?new Date(v).toLocaleDateString(lang==='en'?'en-GB':'de-DE'):'';
+const maps=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+function put(id,d){S.i[id]=d;if(db)db.collection('items').doc(id).set(d).catch(()=>{});render()}
+function del(id){delete S.i[id];if(db)db.collection('items').doc(id).delete().catch(()=>{});render()}
+const P=(t,d,id)=>put(id||uidn(),{t,T:cur,c:Date.now(),...d});
+const U=(id,d)=>put(id,{...S.i[id],...d});
+function putM(d){S.m[uid]=d;if(db)db.collection('members').doc(uid).set(d).catch(()=>{});render()}
+async function init(){
+  try{const u=await claude.use('user');if(u){uid=(await u.id())||'local';try{vu=await u.me()||{}}catch(e){}}db=await claude.use('db')}catch(e){}
+  if(db){let n=0,f=[0,0];const fin=()=>{if(++n>=2)ready=true;render()};
+    db.collection('members').onSnapshot(s=>{S.m={};s.docs.forEach(d=>S.m[d.id]=d.data());f[0]++==0?fin():render()});
+    db.collection('items').onSnapshot(s=>{S.i={};s.docs.forEach(d=>S.i[d.id]=d.data());f[1]++==0?fin():render()});
+  }else{ready=true;render()}
+}
+function form(title,fields,cb,lock){
+  const h=fields.map(f=>{const id='f_'+f.k,v=f.v??'';let x;
+    if(f.type==='select')x=`<select id="${id}">${f.o.map(o=>`<option value="${esc(o[0])}" ${o[0]===v?'selected':''}>${esc(o[1])}</option>`).join('')}</select>`;
+    else if(f.type==='multi')x=f.o.map(o=>`<div class="ck"><input type="checkbox" name="${id}" value="${esc(o[0])}" ${(f.v||f.o.map(a=>a[0])).includes(o[0])?'checked':''}> ${esc(o[1])}</div>`).join('');
+    else if(f.type==='area')x=`<textarea id="${id}" rows="2">${esc(v)}</textarea>`;
+    else x=`<input id="${id}" type="${f.type||'text'}" value="${esc(v)}" ${f.type==='number'?'step="0.01" inputmode="decimal"':''}>`;
+    return `<label>${esc(f.l)}</label>${x}`}).join('');
+  $('#sheet').innerHTML=`<h3 style="margin:0 0 4px">${esc(title)}</h3>${h}<div class="row" style="margin-top:16px">${lock?'<span></span>':`<button class="btn" id="fx">${L('abbrechen','cancel')}</button>`}<button class="btn p" id="fo">${L('speichern','save')}</button></div>`;
+  $('#modal').classList.add('on');if(!lock)$('#fx').onclick=close;
+  $('#fo').onclick=()=>{const v={};for(const f of fields)v[f.k]=f.type==='multi'?[...document.getElementsByName('f_'+f.k)].filter(c=>c.checked).map(c=>c.value):$('#f_'+f.k).value.trim();if(cb(v)!==false)close()};
+}
+const close=()=>$('#modal').classList.remove('on');
+function profile(edit){const p=me()||{};
+  form(edit?L('profil','profile'):L('willkommen bei travelite','welcome to travelite'),[
+   {k:'first',l:L('vorname','first name'),v:p.first||(vu.name||'').split(' ')[0]},{k:'last',l:L('nachname','last name'),v:p.last||(vu.name||'').split(' ').slice(1).join(' ')},
+   {k:'email',l:L('e-mail','email'),v:p.email||vu.email||''},{k:'alias',l:'alias',v:p.alias},{k:'av',l:L('profilbild (emoji)','avatar (emoji)'),v:p.av||'🙂'},
+   {k:'bd',l:L('geburtsdatum (optional)','birth date (optional)'),type:'date',v:p.bd},{k:'pass',l:L('reisepass-nr. (optional)','passport no. (optional)'),v:p.pass},{k:'pe',l:L('pass gültig bis (optional)','passport expires (optional)'),type:'date',v:p.pe},
+   ],
+   v=>{if(!v.first||!v.last)return false;putM(v)},!edit)}
+function newTrip(){form(L('neue reise','new travel'),[{k:'name',l:'name'},{k:'ort',l:L('ort (stadt, land oder insel)','place (city, country or island)')},{k:'s',l:L('start','start'),type:'date'},{k:'e',l:L('ende','end'),type:'date'},{k:'av',l:L('titelbild (emoji)','cover (emoji)'),v:'🌴'}],
+  v=>{if(!v.name||!v.ort||!v.s||!v.e)return false;const id=uidn();put(id,{t:'trip',name:v.name,ort:v.ort,s:v.s,e:v.e,av:v.av,nm:'short',c:Date.now()});put('m_'+id+'_'+uid,{t:'mem',T:id,u:uid,role:'travellead',c:Date.now()});cur=id;tab='home'})}
+function joinFlow(id){const t=S.i[id];if(!t||t.t!=='trip')return;form(L('reise beitreten: ','join: ')+t.name,[],()=>{put('m_'+id+'_'+uid,{t:'mem',T:id,u:uid,role:'traveller',c:Date.now()});cur=id;tab='home';history.replaceState(null,'',location.pathname)})}
+/* punkte / mvp */
+function points(){const p={},w=W();mems().forEach(m=>{const c=cnt(m.u);p[m.u]=Object.keys(c).reduce((a,k)=>a+c[k]*w[k],0)});return p}
+const mvpEnded=()=>!!(S.i['cfg_'+cur]||{}).ended;
+const mode=()=>(S.i['cfg_'+cur]||{}).mode||'once';
+const period=()=>{const m=mode(),d=new Date();return m==='day'?d.toISOString().slice(0,10):m==='week'?'KW'+Math.floor(d/6048e5):'trip'};
+const plabel=k=>k==='trip'?L('gesamte reise','whole trip'):k.startsWith('KW')?L('woche ','week ')+k.slice(2):dd(k);
+function balances(){const b={};mems().forEach(m=>b[m.u]=0);
+  list('exp').forEach(e=>{const s=(e.split||[]).filter(u=>u in b);if(!s.length||!(e.payer in b))return;b[e.payer]+=e.amt;s.forEach(u=>b[u]-=e.amt/s.length)});
+  const cr=[],de=[];Object.entries(b).forEach(([u,v])=>{v=Math.round(v*100)/100;if(v>.004)cr.push([u,v]);else if(v<-.004)de.push([u,-v])});cr.sort((a,b)=>b[1]-a[1]);de.sort((a,b)=>b[1]-a[1]);
+  const t=[];let i=0,j=0;while(i<de.length&&j<cr.length){const x=Math.min(de[i][1],cr[j][1]);t.push([de[i][0],cr[j][0],x]);de[i][1]-=x;cr[j][1]-=x;if(de[i][1]<.005)i++;if(cr[j][1]<.005)j++}return{b,t}}
+const cats=()=>L(['an-/abreise','unterkunft','lebensmittel','getränke','restaurant','aktivität','freizeit','mietwagen','sprit','parken','nahverkehr','sonstiges'],['travel','lodging','food','drinks','restaurant','activity','leisure','rental car','fuel','parking','local transport','other']).concat(list('cat').map(c=>c.name));
+const own=x=>lead()||x.by===uid;
+const ast=x=>x.st||(x.booked?'plan':'prop'),lt=d=>d&&new Date(d)<new Date(),off=k=>(trip().off||[]).includes(k);
+const TR={offen:'open','läuft':'in progress',erledigt:'done',prop:'proposal',plan:'planned',cancel:'cancelled',flug:'flight',zug:'train',bahn:'bus / tram',auto:'car',fahrgemeinschaft:'carpool',mietwagen:'rental car',an:'arrival',ab:'return',vor:'local',supermarkt:'supermarket',parkplatz:'parking',flughafen:'airport',bahnhof:'train station',sonstiges:'other'},TRD={prop:'vorschlag',plan:'geplant',cancel:'abgesagt'};
+const tr=v=>(lang==='en'?TR[v]:TRD[v])||v;
+const bagtypes=()=>trip().bag||L(['persönliches gepäckstück','handgepäck','aufgabegepäck'],['personal item','carry-on','checked baggage']);
+const W=()=>({shop:2,todo:5,exp:1,act:1,mvp:3,...(trip().w||{})});
+const WL=()=>({shop:L('einkauf erledigt','shopping done'),todo:L('todo abgeschlossen','todo completed'),exp:L('ausgabe erfasst','expense logged'),act:L('aktivität vorgeschlagen','activity proposed'),mvp:L('mvp-stimme erhalten','mvp vote received')});
+function cnt(u){return{shop:list('shop').filter(x=>x.done&&x.doneBy===u).length,todo:list('todo').filter(x=>x.st==='erledigt'&&x.doneBy===u).length,exp:list('exp').filter(x=>x.payer===u).length,act:list('act').filter(x=>x.by===u).length,mvp:list('vote').filter(x=>x.for===u).length}}
+function arrows(){document.querySelectorAll('.navw').forEach(w=>{const n=w.querySelector('nav');w.classList.toggle('hl',n.scrollLeft>2);w.classList.toggle('hr',n.scrollLeft+n.clientWidth<n.scrollWidth-2)})}
+const X=id=>`<button class="btn s" data-a="del" data-id="${id}">✕</button>`;
+const E=m=>`<div class="empty">${m}</div>`;
+/* views */
+const V={};
+V.home=()=>{const t=trip(),days=Math.ceil((new Date(t.s)-Date.now())/864e5),{b}=balances(),pt=points(),n=t.next,
+  ev=[...list('act').filter(a=>ast(a)==='plan'&&a.when).map(a=>({w:a.when,x:'🎯 '+a.title})),...list('leg').filter(l=>l.when).map(l=>({w:l.when,x:'🚐 '+l.from+' → '+l.to}))].filter(e=>new Date(e.w)>Date.now()).sort((a,b)=>a.w.localeCompare(b.w)).slice(0,4),
+  req=t.settle&&(b[uid]||0)<-.004;
+  return `<div class="card" style="text-align:center"><div style="font-size:40px">${esc(t.av)}</div><b>${esc(t.name)}</b> ${lead()?`<button class="btn s" data-a="edittrip" data-id="${cur}">✏️</button>`:''}<div class="mu">${esc(t.ort)} · ${dd(t.s)} – ${dd(t.e)}</div>
+  <div><a href="https://www.google.com/search?q=${encodeURIComponent('wetter '+t.ort)}" target="_blank" rel="noopener">🌤 ${L('wetter','weather')} ↗</a></div><div class="big">${days>0?days:days>-((new Date(t.e)-new Date(t.s))/864e5)?'🎉':'✓'}</div><div class="mu">${days>0?L('tage bis zur reise','days until the trip'):L('die reise läuft / ist vorbei','trip is on / over')}</div></div>
+  ${n?`<div class="card" data-go="transfer|orte"><div class="mu">${L('nächstes ziel','next destination')}</div><b>📍 ${esc(n.name)}</b> <a href="${maps(n.addr||n.name)}" target="_blank" rel="noopener">google maps ↗</a></div>`:''}
+  ${req?`<div class="card bad" data-go="fin">💶 ${L('ausgleich angefordert: bitte saldo begleichen','settlement requested: please settle your balance')}</div>`:''}
+  <div class="row"><div class="card" data-go="fin" style="flex:1"><div class="mu">${L('mein saldo','my balance')}</div><div class="pts ${(b[uid]||0)>=0?'ok':'bad'}">${eur(b[uid]||0)}</div></div><div class="card" data-go="rank|score" style="flex:1"><div class="mu">travelscore</div><div class="pts">${pt[uid]||0}</div></div></div>
+  <h2>${L('nächste termine','upcoming')}</h2>${ev.map(e=>`<div class="card row" data-go="schedule"><span>${esc(e.x)}</span><span class="gold">${dt(e.w)}</span></div>`).join('')||E(L('keine termine','nothing scheduled'))}
+  ${list('todo').filter(x=>x.to===uid&&x.st!=='erledigt').length?`<h2>${L('meine offenen todos','my open todos')}</h2>`+list('todo').filter(x=>x.to===uid&&x.st!=='erledigt').map(x=>`<div class="card" data-go="todo|meine">${esc(x.title)} <span class="mu">${x.due?dd(x.due):''}</span></div>`).join(''):''}`};
+const SUBS=()=>({transfer:[['reisen',L('reisen','journeys')],['personalien',L('personalien','personal data')],['gepaeck',L('gepäck','luggage')],['packliste',L('packliste','packing list')],['orte',L('orte','places')]],wohnen:[['unterkunft',L('unterkunft','lodging')],['zimmer',L('zimmer','rooms')],['einkauf',L('einkauf','shopping')]],fin:[['ausgaben',L('ausgaben','expenses')],['kalkulation',L('kalkulation','budget')]],act:[['vorschlaege',L('vorschläge','proposals')],['geplant',L('geplant','planned')]],todo:[['meine',L('meine','mine')],['alle',L('alle','all')]],rank:[['score','travelscore'],['mvp','travelmvp']],team:[['team',L('zugang','access')],['settings',L('einstellungen','settings')]]});
+const subList=t=>(SUBS()[t]||[]).filter(s=>!off(t+'.'+s[0])&&!(t==='team'&&s[0]==='settings'&&!lead()));
+V.transfer=()=>({
+ reisen:()=>{const l=list('leg').sort((a,b)=>(a.when||'').localeCompare(b.when||''));return l.map(x=>`<div class="card"><div class="row"><div><span class="tag">${x.dir==='an'?L('anreise','arrival'):x.dir==='ab'?L('abreise','return'):L('vor ort','local')}</span><span class="tag">${esc(tr(x.mode))}</span>${x.no?`<span class="tag">${esc(x.no)}</span>`:''}<b>${esc(x.from)} → ${esc(x.to)}</b></div>${lead()?X(x.id):''}</div>
+  <div class="mu">${dt(x.when)}${x.arr?' → '+dt(x.arr):x.dur?' · '+esc(x.dur):''}${x.driver?' · 🚗 '+esc(dn(x.driver)):''}${x.note?' · '+esc(x.note):''}</div>${x.park?`<div class="mu">🅿️ ${esc(x.park)} · ${(x.pw||[]).map(dn).map(esc).join(', ')||'–'}</div>`:''}
+  <div class="row wr" style="margin-top:7px"><button class="btn s ${(x.p||[]).includes(uid)?'s-ok':''}" data-a="join" data-id="${x.id}" data-k="p">${(x.p||[]).includes(uid)?L('abmelden','leave'):L('ich fahre mit','i am in')}</button>${x.park?`<button class="btn s ${(x.pw||[]).includes(uid)?'s-ok':''}" data-a="join" data-id="${x.id}" data-k="pw">${(x.pw||[]).includes(uid)?L('parkplatz abmelden','cancel parking'):L('parkplatz einbuchen','book parking')}</button>`:''}<span class="mu">${(x.p||[]).map(dn).map(esc).join(', ')}</span></div></div>`).join('')||E(L('noch keine reisen.','no journeys yet.'))},
+ personalien:()=>lead()?mems().map(m=>{const p=prof(m.u);return `<div class="card"><b>${esc(p.first)} ${esc(p.last)}</b> ${m.role==='travellead'?'<span class="tag">lead</span>':''}<div class="mu">${esc(p.email||'–')}<br>${L('geburt','born')}: ${dd(p.bd)||'–'} · ${L('pass','passport')}: ${esc(p.pass||'–')} (${dd(p.pe)||'–'})</div></div>`}).join(''):E(L('nur für den travellead sichtbar','visible to the travellead only')),
+ gepaeck:()=>list('bag').map(x=>`<div class="card row"><div><b>${esc(x.label)}</b> <span class="tag">${x.who==='all'?L('alle','everyone'):esc(dn(x.who))}</span><div class="mu">${esc(x.info)}</div></div>${lead()?X(x.id):''}</div>`).join('')||E(L('noch keine gepäckregeln','no luggage rules yet')),
+ packliste:()=>`<div class="row wr"><button class="btn s ${pkAll?'':'p'}" data-a="pkview" data-id="0">${L('nur meine','mine only')}</button><button class="btn s ${pkAll?'p':''}" data-a="pkview" data-id="1">${L('alle packlisten','all lists')}</button></div>`+mems().filter(m=>pkAll||m.u===uid).map(m=>{const l=list('pack').filter(x=>x.by===m.u);return `<h2>${av(m.u)} ${esc(dn(m.u))}${m.u===uid?' ('+L('ich','me')+')':''}</h2>`+(l.map(x=>`<div class="card row"><div class="row wr"><button class="chk ${x.done?'on':''}" ${m.u===uid&&!pkAll?`data-a="pk" data-id="${x.id}"`:''}>${x.done?'✓':''}</button><span class="${x.done?'done':''}">${x.qty>1?x.qty+'× ':''}${esc(x.txt)}</span></div>${m.u===uid&&!pkAll?X(x.id):''}</div>`).join('')||`<div class="mu">–</div>`)}).join(''),
+ orte:()=>{const a=list('acc').map(x=>({id:'',name:x.name,kind:L('unterkunft','lodging'),addr:x.addr}));return [...a,...list('place')].map(x=>`<div class="card row"><div><span class="tag">${esc(tr(x.kind))}</span><b>${esc(x.name)}</b> ${trip().next&&trip().next.name===x.name?`<span class="tag s-ok">📍 ${L('nächstes ziel','next goal')}</span>`:''}<div><a href="${maps(x.addr||x.name)}" target="_blank" rel="noopener">${esc(x.addr||'google maps')} ↗</a></div></div><div>${lead()?`<button class="btn s ${trip().next&&trip().next.name===x.name?'s-ok':''}" data-a="goal" data-n="${esc(x.name)}" data-ad="${esc(x.addr||'')}">${L('als ziel','set goal')}</button>${x.id?X(x.id):''}`:''}</div></div>`).join('')||E(L('noch keine orte','no places yet'))}
+})[subs.transfer]();
+V.act=()=>{const A=list('act');
+ if(subs.act==='vorschlaege')return A.filter(x=>ast(x)==='prop').map(x=>`<div class="card"><div class="row"><span><span class="tag s-wa">${L('vorschlag','proposal')}</span><b>${esc(x.title)}</b></span>${x.cost?`<span class="tag">${eur(x.cost)} p.P.</span>`:''}</div><div class="mu">${dt(x.when)} · ${esc(dn(x.by))}${x.desc?' · '+esc(x.desc):''}${x.dl?'<br>'+L('abstimmen bis ','vote until ')+dt(x.dl):''}</div>
+ <div class="row wr" style="margin-top:7px"><button class="btn s ${(x.likes||[]).includes(uid)?'s-wa':''}" ${lt(x.dl)?'disabled':`data-a="join" data-id="${x.id}" data-k="likes"`}>${(x.likes||[]).includes(uid)?'💛':'🤍'} ${(x.likes||[]).length} ${L('interessiert','interested')}</button><button class="btn s ${(x.dis||[]).includes(uid)?'s-bad':''}" ${lt(x.dl)?'disabled':`data-a="dis" data-id="${x.id}"`}>👎 ${(x.dis||[]).length}</button><span class="mu">${(x.likes||[]).map(dn).map(esc).join(', ')}</span>${lead()?`<button class="btn s" data-a="book" data-id="${x.id}">${L('einplanen','plan it')}</button>`:''}${own(x)?X(x.id):''}</div></div>`).join('')||E(L('noch keine vorschläge','no proposals yet'));
+ return A.filter(x=>ast(x)!=='prop').map(x=>{const c=ast(x)==='cancel',fd=lt(x.fd);return `<div class="card"><div class="row"><b class="${c?'done':''}">${esc(x.title)}</b><span class="tag ${c?'s-bad':'s-ok'}">${c?L('abgesagt','cancelled'):L('geplant','planned')}</span></div><div class="mu">${dt(x.when)}${x.cost?' · '+eur(x.cost)+' p.P.':''}${x.fd?'<br>'+L('zu-/absage bis ','respond by ')+dt(x.fd):''}</div><div class="mu">✓ ${(x.yes||[]).map(dn).map(esc).join(', ')||'–'} · ✗ ${(x.no||[]).map(dn).map(esc).join(', ')||'–'}</div>
+ ${c?'':`<div class="row wr" style="margin-top:7px"><button class="btn s ${(x.yes||[]).includes(uid)?'s-ok':''}" ${fd?'disabled':`data-a="rsvp" data-id="${x.id}" data-k="yes"`}>${L('zusagen','confirm')}</button><button class="btn s ${(x.no||[]).includes(uid)?'s-bad':''}" ${fd?'disabled':`data-a="rsvp" data-id="${x.id}" data-k="no"`}>${L('absagen','decline')}</button>${lead()?`<button class="btn s" data-a="cancel" data-id="${x.id}">${L('canceln','cancel')}</button>`:''}</div>`}${lead()?X(x.id):''}</div>`}).join('')||E(L('noch nichts geplant','nothing planned yet'))};
+V.schedule=()=>{const ev=[...list('act').filter(a=>ast(a)==='plan').map(a=>({w:a.when,id:a.id,x:'🎯 '+a.title,rsvp:1,y:a.yes||[],n:a.no||[],fd:a.fd})),...list('leg').filter(l=>l.when).map(l=>({w:l.when,x:'🚐 '+l.mode+' '+(l.no||'')+': '+l.from+' → '+l.to,y:[],n:[]}))].sort((a,b)=>a.w.localeCompare(b.w));
+ return ev.map(e=>`<div class="card"><div class="gold">${dt(e.w)}</div><b>${esc(e.x)}</b>${e.rsvp?`<div class="row wr" style="margin-top:7px"><button class="btn s ${e.y.includes(uid)?'s-ok':''}" ${lt(e.fd)?'disabled':`data-a="rsvp" data-id="${e.id}" data-k="yes"`}>${L('zusagen','confirm')}</button><button class="btn s ${e.n.includes(uid)?'s-bad':''}" ${lt(e.fd)?'disabled':`data-a="rsvp" data-id="${e.id}" data-k="no"`}>${L('absagen','decline')}</button><span class="mu">✓ ${e.y.map(dn).map(esc).join(', ')}</span></div>`:''}</div>`).join('')||E(L('zeitplan ist leer','schedule is empty'))};
+V.wohnen=()=>({
+ unterkunft:()=>list('acc').map(x=>`<div class="card"><div class="row"><b>${esc(x.name)}</b>${lead()?X(x.id):''}</div><div class="mu">${dd(x.from)} – ${dd(x.to)} · <a href="${maps(x.addr||x.name)}" target="_blank" rel="noopener">${esc(x.addr||'maps')} ↗</a></div><div class="mu">${x.rooms?x.rooms+' '+L('zimmer','rooms'):''}${x.floors?' · '+esc(x.floors):''}${x.cap?' · '+x.cap+' '+L('pers./zimmer','ppl/room'):''}</div><div class="mu">${(x.who||[]).map(dn).map(esc).join(', ')}</div>${lead()&&x.rooms?`<button class="btn s" data-a="genrooms" data-id="${x.id}" style="margin-top:6px">${L('zimmer anlegen','create rooms')}</button>`:''}</div>`).join('')||E(L('noch keine unterkunft','no lodging yet')),
+ zimmer:()=>{const A=list('acc');if(!A.length)return E(L('erst eine unterkunft anlegen','add a lodging first'));acc=A.find(a=>a.id===acc)?acc:A[0].id;const a=S.i[acc],R=list('room').filter(r=>r.acc===acc),ass=R.flatMap(r=>r.who||[]),free=(a.who||[]).filter(u=>!ass.includes(u));
+  return `<div class="card"><select data-a="acc">${A.map(x=>`<option value="${x.id}" ${x.id===acc?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>`+R.map(r=>`<div class="card"><div class="row"><b>${esc(r.name)}</b><span class="mu">${esc(r.bld||'')} ${r.fl?L('etage ','floor ')+esc(r.fl):''} · ${(r.who||[]).length}/${r.beds}</span></div><div class="mu">${(r.who||[]).map(u=>esc(dn(u))+(lead()?` <a href="#" data-a="unroom" data-id="${r.id}" data-u="${u}">✕</a>`:'')).join(', ')||'–'}</div>${lead()?`<button class="btn s" data-a="rmdel" data-id="${r.id}">${L('zimmer löschen','delete room')}</button>`:''}</div>`).join('')+
+  (lead()?`<div class="row wr"><button class="btn" data-a="newroom">+ ${L('zimmer','room')}</button><button class="btn" data-a="lottery">🎲 ${L('auslosen','draw lots')}</button><button class="btn" data-a="copyrooms">${L('aus vorheriger übernehmen','copy from previous')}</button></div>`:'')+
+  (free.length?`<h2>${L('noch ohne zimmer','unassigned')}</h2>`+free.map(u=>`<div class="card row"><span>${esc(dn(u))}</span>${lead()?`<select data-a="assign" data-u="${u}" style="width:auto"><option value="">…</option>${R.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join('')}</select>`:''}</div>`).join(''):'')},
+ einkauf:()=>shopView()
+})[subs.wohnen]();
+V.todo=()=>{const o={offen:0,läuft:1,erledigt:2},late=x=>x.due&&x.st!=='erledigt'&&x.due<new Date().toISOString().slice(0,10);
+ return list('todo').filter(x=>subs.todo!=='meine'||x.to===uid).sort((a,b)=>o[a.st]-o[b.st]||(a.due||'9').localeCompare(b.due||'9')).map(x=>`<div class="card row"><div><div class="${x.st==='erledigt'?'done':''}"><b>${esc(x.title)}</b></div><div class="mu">→ ${esc(dn(x.to))} · ${esc(dn(x.by))}${x.due?` · <span class="${late(x)?'bad':''}">${dd(x.due)}</span>`:''}</div></div><div>${x.to!==uid&&x.st!=='erledigt'?`<button class="btn s" data-a="take" data-id="${x.id}">${L('übernehmen','take over')}</button> `:''}<button class="btn s ${{offen:'s-bad',läuft:'s-wa',erledigt:'s-ok'}[x.st]}" data-a="tst" data-id="${x.id}">${tr(x.st)}</button> ${own(x)?X(x.id):''}</div></div>`).join('')||E(L('keine aufgaben','no tasks'))};
+V.finv=()=>{const ex=list('exp').reverse(),{b,t}=balances(),tot=ex.reduce((s,e)=>s+e.amt,0),bc={};const ba={};ex.forEach(e=>{bc[e.cat]=(bc[e.cat]||0)+e.amt;if(e.act)ba[e.act]=(ba[e.act]||0)+e.amt});
+ return `<div class="card"><div class="mu">${L('gesamt','total')}</div><div class="pts">${eur(tot)}</div>${Object.entries(bc).map(([k,v])=>`<span class="tag">${esc(k)}: ${eur(v)}</span>`).join('')}</div>
+ ${Object.keys(ba).length?`<h2>${L('kosten je aktivität','cost per activity')}</h2><div class="card">${Object.entries(ba).map(([id,v])=>`<div class="row"><span>${esc((S.i[id]||{}).title||'?')}</span><b>${eur(v)}</b></div>`).join('')}</div>`:''}
+ <h2>${L('wer schuldet wem?','who owes whom?')}</h2>${t.map(([a,c,x])=>`<div class="card"><b>${esc(dn(a))}</b> → <b>${esc(dn(c))}</b>: <span class="gold">${eur(x)}</span><div class="mu" style="white-space:pre-wrap">${esc(prof(c).pay||L('keine zahlungsdaten','no payment details'))}</div></div>`).join('')||E(L('alles ausgeglichen','all settled'))}
+ ${lead()&&t.length?`<button class="btn p" data-a="settle">${L('ausgleich anfordern','request settlement')}</button>`:''}
+ <h2>${L('kontostand','balances')}</h2><div class="card">${mems().map(m=>`<div class="row"><span>${esc(dn(m.u))}</span><span class="${b[m.u]>=0?'ok':'bad'}">${eur(b[m.u]||0)}</span></div>`).join('')}</div>
+ <h2>${L('ausgaben','expenses')}</h2>${ex.map(e=>`<div class="card"><div class="row"><b>${esc(e.title)}</b><b>${eur(e.amt)}</b></div><div class="mu"><span class="tag">${esc(e.cat)}</span>${esc(dn(e.payer))} · ÷${(e.split||[]).length}${e.req?' · 💬 '+L('zahlung angefragt','payment requested'):''}</div>${own({by:e.payer})?X(e.id):''}</div>`).join('')||E(L('noch keine ausgaben','no expenses yet'))}
+ ${lead()?`<button class="btn" data-a="newcat">+ ${L('kostenart','category')}</button>`:''}`};
+V.rank=()=>{if(subs.rank==='mvp')return mvpView();const p=points(),w=W(),wl=WL();
+ return `<details><summary>ℹ️ ${L('so entstehen punkte','how points work')} ▾</summary><div class="card" style="margin-top:8px">${Object.keys(wl).map(k=>`<div class="row"><span>${wl[k]}</span><b>+${w[k]}</b></div>`).join('')}</div></details><h2>travelscore</h2>`+mems().sort((a,b)=>p[b.u]-p[a.u]).map((m,i)=>{const c=cnt(m.u);return `<details class="card"><summary style="display:flex;justify-content:space-between"><span>${['🥇','🥈','🥉'][i]||i+1+'.'} ${av(m.u)} ${esc(dn(m.u))} ▾</span><span class="pts">${p[m.u]}</span></summary>${Object.keys(wl).map(k=>`<div class="row mu"><span>${wl[k]}: ${c[k]} × ${w[k]}</span><span>${c[k]*w[k]}</span></div>`).join('')}</details>`}).join('')};
+function mvpView(){const per=period(),votes=list('vote'),ended=mvpEnded(),over=Date.now()>new Date(trip().e).getTime()+864e5,fin=k=>ended||k!==per||(k==='trip'&&over),open=!fin(per),
+ cu=votes.filter(v=>v.per===per),mine=cu.find(v=>v.by===uid),all=mems(),cand=all.length>1?all.filter(m=>m.u!==uid):all,
+ tally=v=>{const c={};v.forEach(x=>c[x.for]=(c[x.for]||0)+1);return Object.entries(c).sort((a,b)=>b[1]-a[1])},hist={};votes.forEach(v=>(hist[v.per]=hist[v.per]||[]).push(v));
+ const ML={day:L('täglich','daily'),week:L('wöchentlich','weekly'),once:L('einmalig','once')},tl=t=>t.map(([u,n])=>`<div class="row"><span>⭐ ${esc(dn(u))}</span><b>${n}</b></div>`).join('')||'<div class="mu">–</div>',done=Object.keys(hist).filter(fin).sort().reverse(),fv=votes.filter(v=>fin(v.per));
+ return `<div class="card row"><span class="mu">${L('rhythmus (travellead)','rhythm (travellead)')}</span>${lead()?`<select data-a="mode" style="width:auto">${Object.keys(ML).map(k=>`<option value="${k}" ${mode()===k?'selected':''}>${ML[k]}</option>`).join('')}</select>`:`<b>${ML[mode()]}</b>`}</div>
+ <div class="card"><div class="row"><b>${L('aktuelle runde: ','current round: ')}${plabel(per)}</b><span class="tag ${open?'s-ok':'s-bad'}">${open?L('läuft','running'):L('beendet','ended')}</span></div><div class="mu">${cu.length} / ${all.length} ${L('haben abgestimmt','have voted')}</div>
+ ${open?`<div class="mu">${mine?L('deine stimme: ','your vote: ')+esc(dn(mine.for))+L(' (änderbar bis zum ende der runde)',' (changeable until the round ends)'):L('du hast noch nicht abgestimmt','you have not voted yet')}</div><div style="margin:8px 0">${cand.map(m=>`<button class="btn s ${mine&&mine.for===m.u?'s-ok':''}" style="margin:3px" data-a="vote" data-id="${m.u}">${esc(dn(m.u))}</button>`).join('')||`<span class="mu">${L('noch keine teilnehmer','no participants yet')}</span>`}</div>`:''}</div>
+ ${lead()?`<button class="btn" data-a="${ended?'mvpopen':'mvpend'}">${ended?L('mvp-wahl wieder öffnen','reopen mvp vote'):L('mvp-wahl beenden','end mvp vote')}</button>`:''}
+ <h2>${L('auswertung je runde','results per round')}</h2>${done.map(k=>{const t=tally(hist[k]);return `<div class="card"><div class="row"><span>${plabel(k)}</span><span class="gold">🏆 ${esc(dn(t[0][0]))}</span></div>${tl(t)}</div>`}).join('')||E(L('ergebnisse erscheinen am ende jeder runde','results appear at the end of each round'))}
+ <h2>${L('gesamtauswertung','overall result')}</h2><div class="card">${fv.length?`<div class="gold" style="margin-bottom:6px">🏆 ${esc(dn(tally(fv)[0][0]))}</div>`:''}${tl(tally(fv))}</div>`}
+V.chat=()=>list('msg').map(x=>`<div class="msg ${x.by===uid?'me':''}"><div class="mu">${av(x.by)} ${esc(dn(x.by))} · ${dt(x.c)}</div>${esc(x.txt)}</div>`).join('')||E(L('noch keine nachrichten','no messages yet'));
+V.teamv=()=>{const t=trip(),link=location.origin+location.pathname+'#j='+cur;
+ return `<div class="card"><div class="mu">${L('einladungslink für traveller','invite link for travellers')}</div><div style="word-break:break-all;user-select:all">${esc(link)}</div></div>
+ <div class="card"><div class="mu">${L('reise-code (zum beitreten)','trip code (to join)')}</div><div style="user-select:all;font-weight:700;word-break:break-all">${cur}</div></div><h2>${L('reisende','travellers')}</h2>${mems().map(m=>`<div class="card row"><span>${av(m.u)} ${esc(dn(m.u))} <span class="tag">${m.role}</span></span>${lead()&&m.u!==uid?`<span><button class="btn s" data-a="role" data-id="${m.id}">→ ${m.role==='travellead'?'traveller':'travellead'}</button> <button class="btn s" data-a="kick" data-id="${m.id}">${L('entfernen','remove')}</button></span>`:''}</div>`).join('')}`};
+V.fin=()=>subs.fin==='kalkulation'?V.calc():V.finv();
+const CC=()=>[['transfer','transfer'],['unterkunft',L('unterkunft','lodging')],['leben',L('lebenskosten','living costs')],['akt',L('aktivitäten','activities')],['sonst',L('sonstiges','other')]];
+const CM=()=>[['total',L('gesamt','total')],['pp',L('pro person','per person')],['ppd',L('pro person & tag','per person & day')],['night',L('pro nacht (gesamt)','per night (total)')]];
+const calcN=()=>parseInt(trip().cn)||mems().length||1;
+const calcDays=()=>Math.max(1,Math.round((new Date(trip().e)-new Date(trip().s))/864e5)+1);
+const calcTot=x=>{const n=calcN(),d=calcDays();return x.mode==='pp'?x.amt*n:x.mode==='ppd'?x.amt*n*d:x.mode==='night'?x.amt*Math.max(1,d-1):x.amt};
+V.calc=()=>{const l=list('calc'),n=calcN(),sum=l.reduce((a,x)=>a+calcTot(x),0),bc={},sp=list('exp').reduce((a,e)=>a+e.amt,0);l.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+calcTot(x));
+ return `<div class="card"><div class="row"><span class="mu">${L('anzahl personen','number of people')}</span>${lead()?`<input type="number" min="1" data-a="cn" value="${n}" style="width:80px">`:`<b>${n}</b>`}</div><div class="mu">${calcDays()} ${L('tage','days')}</div><div class="big">${eur(sum/n)}</div><div class="mu">${L('pro person (kalkuliert)','per person (estimated)')} · ${L('gesamt','total')} ${eur(sum)}</div></div>
+ ${l.length?`<div class="card">${CC().filter(c=>bc[c[0]]).map(c=>`<div class="row"><span>${c[1]}</span><span>${eur(bc[c[0]])} · ${eur(bc[c[0]]/n)} p.P.</span></div>`).join('')}</div>`:''}
+ <div class="card"><div class="row"><span>${L('bisher ausgegeben','spent so far')}</span><b>${eur(sp)}</b></div><div class="row"><span class="mu">${L('noch im budget','left in budget')}</span><b class="${sum-sp>=0?'ok':'bad'}">${eur(sum-sp)}</b></div></div>
+ <h2>${L('positionen','items')}</h2>${CC().map(c=>l.filter(x=>x.cat===c[0]).map(x=>`<div class="card row"><div><span class="tag">${c[1]}</span><b>${esc(x.title)}</b><div class="mu">${eur(x.amt)} ${esc((CM().find(m=>m[0]===x.mode)||[])[1]||'')} → ${eur(calcTot(x))}</div></div>${lead()?X(x.id):''}</div>`).join('')).join('')||E(L('noch keine positionen','no items yet'))}
+ ${lead()?`<button class="btn" data-a="calcimp">${L('geplante aktivitäten übernehmen','import planned activities')}</button>`:''}`};
+const addCalc=()=>lead()&&form(L('kostenposition','cost item'),[{k:'cat',l:L('rubrik','section'),type:'select',o:CC()},{k:'title',l:L('bezeichnung','label')},{k:'amt',l:L('betrag (€)','amount (€)'),type:'number'},{k:'mode',l:L('berechnung','basis'),type:'select',o:CM()}],v=>{const a=parseFloat(String(v.amt).replace(',','.'));if(!v.title||!(a>=0))return false;P('calc',{...v,amt:a})});
+V.team=()=>subs.team==='settings'&&lead()?V.settings():V.teamv();
+V.settings=()=>`<button class="btn" data-a="edittrip" data-id="${cur}" style="margin-bottom:9px">✏️ ${L('reisedaten bearbeiten','edit travel details')}</button><div class="card row"><span>${L('namen anzeigen als','display names as')}</span><select data-a="nm" style="width:auto"><option value="short" ${trip().nm!=='alias'?'selected':''}>${L('vorname + initial','first name + initial')}</option><option value="alias" ${trip().nm==='alias'?'selected':''}>alias</option></select></div><div class="row wr"><button class="btn" data-a="cfgmods">${L('rubriken & unterkategorien','sections & subsections')}</button><button class="btn" data-a="cfgbag">${L('gepäckarten','luggage types')}</button><button class="btn" data-a="cfgw">${L('punkte je aktion','points per action')}</button></div><p class="mu">${L('weitere kostenarten legst du unter finanzen an.','add more cost categories under finance.')}</p>`;
+const TABS=()=>[['home','🏠 '+L('start','home')],['schedule','🗓 '+L('zeitplan','schedule')],['transfer','🚐 transfer'],['act','🎯 '+L('aktivitäten','activities')],['wohnen','🏡 '+L('wohnen','living')],['todo','✅ todo'],['fin','💶 '+L('finanzen','finance')],['rank','🏆 ranking'],['chat','💬 '+L('chat','chat')],['team','⚙️ '+L('team','team')]];
+const ADD={
+ transfer:()=>({reisen:()=>lead()&&form(L('reise / transfer','journey / transfer'),[{k:'dir',l:L('art','type'),type:'select',o:[['an',L('anreise','arrival')],['ab',L('abreise','return')],['vor',L('vor ort','local')]]},{k:'mode',l:L('verkehrsmittel','mode'),type:'select',o:[['flug',L('flug','flight')],['zug',L('zug','train')],['bahn',L('bus / bahn','bus / tram')],['auto',L('auto','car')],['fahrgemeinschaft',L('fahrgemeinschaft','carpool')],['mietwagen',L('mietwagen','rental car')]]},{k:'no',l:L('flug-/zugnummer (infos bitte ergänzen)','flight/train no. (add details manually)')},{k:'from',l:L('von','from')},{k:'to',l:L('nach','to')},{k:'when',l:L('abfahrt','departure'),type:'datetime-local'},{k:'arr',l:L('ankunft (zielzeit)','arrival time'),type:'datetime-local'},{k:'dur',l:L('oder dauer (z.b. 2h 30m)','or duration (e.g. 2h 30m)')},{k:'p',l:L('wer fährt mit?','who is going?'),type:'multi',o:mo()},{k:'driver',l:L('fahrer','driver'),type:'select',o:[['','–'],...mo()]},{k:'park',l:L('parkplatz am abfahrtsort (optional)','parking at departure (optional)')},{k:'note',l:L('notiz','note')}],v=>{if(!v.from||!v.to)return false;P('leg',{...v,pw:[]});if(v.park)P('todo',{title:L('parkplatz buchen: ','book parking: ')+v.park,to:uid,due:'',st:'offen',by:uid})}),
+  personalien:()=>0,gepaeck:()=>lead()&&form(L('gepäck','luggage'),[{k:'label',l:L('gepäckart','luggage type'),type:'select',o:bagtypes().map(a=>[a,a])},{k:'info',l:'info',type:'area'},{k:'who',l:L('für','for'),type:'select',o:[['all',L('alle','everyone')],...mo()]}],v=>{if(!v.label)return false;P('bag',v)}),
+  packliste:()=>form(L('ich packe ein','i am packing'),[{k:'txt',l:L('gegenstand','item')},{k:'qty',l:L('anzahl','quantity'),type:'number',v:1}],v=>{if(!v.txt)return false;P('pack',{txt:v.txt,qty:parseInt(v.qty)||1,by:uid,done:false})}),
+  orte:()=>lead()&&form(L('ort','place'),[{k:'name',l:'name'},{k:'kind',l:L('art','kind'),type:'select',o:['supermarkt','parkplatz','flughafen','bahnhof','sonstiges'].map(a=>[a,tr(a)])},{k:'addr',l:L('adresse','address')}],v=>{if(!v.name)return false;P('place',v)})})[subs.transfer](),
+ act:()=>form(L('aktivität vorschlagen','propose activity'),[{k:'title',l:L('titel','title')},{k:'desc',l:L('beschreibung','description'),type:'area'},{k:'when',l:L('datum & uhrzeit','date & time'),type:'datetime-local'},{k:'dl',l:L('abstimmen bis','vote until'),type:'datetime-local'},{k:'cost',l:L('kosten pro person (€, optional)','cost per person (€, optional)'),type:'number'}],v=>{if(!v.title||!v.when)return false;P('act',{...v,cost:parseFloat(v.cost)||0,by:uid,likes:[uid],yes:[],no:[],st:'prop'})}),
+ todo:()=>form('todo',[{k:'title',l:L('aufgabe','task')},{k:'to',l:L('zuordnen an','assign to'),type:'select',v:uid,o:mo()},{k:'due',l:L('fällig am','due'),type:'date'}],v=>{if(!v.title)return false;P('todo',{...v,st:'offen',by:uid})}),
+ wohnen:()=>({unterkunft:()=>lead()&&form(L('unterkunft','lodging'),[{k:'name',l:'name'},{k:'addr',l:L('adresse','address')},{k:'from',l:L('von','from'),type:'date',v:trip().s},{k:'to',l:L('bis','to'),type:'date',v:trip().e},{k:'rooms',l:L('anzahl zimmer','number of rooms'),type:'number'},{k:'floors',l:L('etagen (z.b. eg, 1. og)','floors (e.g. ground, 1st)')},{k:'cap',l:L('personen je zimmer (max.)','people per room (max.)'),type:'number',v:2},{k:'who',l:L('wer wohnt hier','who stays'),type:'multi',o:mo()}],v=>{if(!v.name)return false;P('acc',v)}),
+  zimmer:()=>0,einkauf:()=>form(L('einkauf','shopping'),[{k:'title',l:L('produkt','product')},{k:'qty',l:L('menge','amount')},{k:'sl',l:L('einkaufstermin','shopping date'),type:'select',v:curSL==='all'||curSL==='none'?'':curSL,o:[['',L('ohne termin','no date')],...list('shopdate').map(d=>[d.id,d.name])]}],v=>{if(!v.title)return false;P('shop',{...v,by:uid,done:false})})})[subs.wohnen](),
+ fin:()=>subs.fin==='kalkulation'?addCalc():form(L('ausgabe','expense'),[{k:'title',l:L('wofür?','what for?')},{k:'amt',l:L('betrag (€)','amount (€)'),type:'number'},{k:'cat',l:L('kostenart','category'),type:'select',o:cats().map(c=>[c,c])},{k:'act',l:L('aktivität (optional)','activity (optional)'),type:'select',o:[['','–'],...list('act').filter(a=>ast(a)!=='prop').map(a=>[a.id,a.title])]},{k:'payer',l:L('bezahlt von','paid by'),type:'select',v:uid,o:mo()},{k:'split',l:L('aufteilen auf','split between'),type:'multi',o:mo()},{k:'req',l:L('zahlung von mitreisenden anfordern?','request payment from others?'),type:'select',o:[['0',L('nein','no')],['1',L('ja','yes')]]}],
+  v=>{const a=parseFloat(String(v.amt).replace(',','.'));if(!v.title||!(a>0)||!v.split.length)return false;P('exp',{title:v.title,amt:a,cat:v.cat,act:v.act,payer:v.payer,split:v.split,req:v.req==='1'})})
+};
+const VER='1.0';
+function render(){render0();arrows();tagCards();$('#ft').innerHTML=`<a href="#" data-a="imp" class="mu">${L('impressum','imprint')} · travelite v${VER}</a>`}
+function render0(){
+  if(!ready)return;
+  $('#bl').textContent=lang==='de'?'🇩🇪':'🇬🇧';
+  if(!me()){$('#nav').innerHTML=$('#snav').innerHTML=$('#app').innerHTML=$('#fabw').innerHTML='';$('#bt').textContent=$('#bp').textContent='';if(!$('#modal').classList.contains('on'))profile();return}
+  $('#bp').textContent=prof(uid).av+' '+prof(uid).first;
+  const hj=(location.hash.match(/j=(\w+)/)||[])[1];
+  if(hj&&S.i['m_'+hj+'_'+uid]){cur=hj;history.replaceState(null,'','#')}else if(hj&&S.i[hj]&&!$('#modal').classList.contains('on')){joinFlow(hj)}
+  if(cur&&!mrec(uid))cur=null;
+  $('#bt').textContent=cur?(trip().av||'🧳'):'';$('#bs').textContent=cur?'☰':'';$('#side').classList.toggle('open',!!cur&&sideOpen);document.body.classList.toggle('sh',!!cur&&sideOpen);
+  if(!cur){$('#side').innerHTML=$('#snav').innerHTML=$('#fabw').innerHTML='';$('#nav').innerHTML=[['all',L('alle','all')],['travellead','travellead'],['traveller','traveller']].map(f=>`<button class="${tf===f[0]?'on':''}" data-f="${f[0]}">${f[1]}</button>`).join('');
+    const my=Object.values(S.i).filter(m=>m.t==='mem'&&m.u===uid&&S.i[m.T]&&(tf==='all'||m.role===tf));
+    $('#app').innerHTML=`<h2>travels</h2>`+(my.map(m=>{const t=S.i[m.T];return `<div class="card row" data-a="open" data-id="${m.T}" style="cursor:pointer"><div><span style="font-size:26px">${esc(t.av)}</span> <b>${esc(t.name)}</b><div class="mu">${esc(t.ort)} · ${dd(t.s)} – ${dd(t.e)}</div></div><span><span class="tag">${m.role}</span> ${m.role==='travellead'?`<button class="btn s" data-a="edittrip" data-id="${m.T}">✏️</button>`:''}</span></div>`}).join('')||E(L('noch keine reise. nimm einen einladungslink oder lege eine an.','no travels yet. use an invite link or create one.')))+`<button class="btn p" data-a="newtrip">+ ${L('neue reise','new travel')}</button> <button class="btn" data-a="joincode">${L('mit code beitreten','join with code')}</button>`;return}
+  if(off(tab))tab='home';{const sl=subList(tab);if(sl.length&&!sl.some(q=>q[0]===subs[tab]))subs[tab]=sl[0][0]}
+  $('#nav').innerHTML='';$('#snav').innerHTML='';$('#side').innerHTML=sideHtml();
+  $('#app').innerHTML=tab==='chat'?V.chat()+`<div class="row" style="margin-top:12px"><input id="ci" placeholder="${L('nachricht …','message …')}"><button class="btn p" data-a="send">➤</button></div>`:V[tab]();
+  const can={home:0,schedule:0,rank:0,chat:0,team:0}[tab]===0?0:1;
+  $('#fabw').innerHTML=can&&!(tab==='wohnen'&&subs.wohnen==='zimmer')&&!(tab==='transfer'&&subs.transfer==='personalien')?`<button class="fab" data-a="add">+ ${L('neu','new')}</button>`:'';
+}
+function sideHtml(){return TABS().filter(t=>!off(t[0])).map(t=>`<button class="${t[0]===tab?'on':''}" data-t="${t[0]}">${t[1]}${subList(t[0]).length?(t[0]===tab&&!sc[t[0]]?' ▾':' ▸'):''}</button>`+(t[0]===tab&&!sc[t[0]]?subList(tab).map(q=>`<button class="sb ${subs[tab]===q[0]?'on':''}" data-s="${q[0]}">${q[1]}</button>`).join(''):'')).join('')}
+function tagCards(){if(!cur||tab==='home')return;document.querySelectorAll('#app .card').forEach(c=>{if(c.dataset.go)return;const e=c.querySelector('[data-id]'),id=e&&e.dataset.id,x=id&&S.i[id];if(x&&!['mem','vote','cfg'].includes(x.t))c.dataset.d=id})}
+const FL=()=>({when:L('zeit','time'),arr:L('ankunft','arrival'),dur:L('dauer','duration'),from:L('von','from'),to:L('nach / zugeordnet an','to / assigned to'),mode:L('verkehrsmittel','mode'),dir:L('art','type'),park:L('parkplatz','parking'),pw:L('parkplatz gebucht','parking booked'),p:L('dabei','going'),driver:L('fahrer','driver'),note:L('notiz','note'),desc:L('beschreibung','description'),likes:L('interessiert','interested'),yes:L('zugesagt','confirmed'),dl:L('abstimmen bis','vote until'),fd:L('zu-/absage bis','respond by'),cost:L('kosten p.P.','cost p.p.'),st:'status',by:L('erstellt von','created by'),due:L('fällig','due'),doneBy:L('erledigt von','done by'),done:L('erledigt','done'),qty:L('menge','amount'),info:'info',label:L('art','type'),addr:L('adresse','address'),kind:L('art','kind'),bld:L('gebäude','building'),fl:L('etage','floor'),beds:L('betten','beds'),who:L('personen','people'),amt:L('betrag','amount'),cat:L('kostenart','category'),payer:L('bezahlt von','paid by'),split:L('aufgeteilt auf','split between'),act:L('aktivität','activity'),req:L('zahlung angefragt','payment requested'),name:'name',txt:L('gegenstand','item'),title:L('titel','title'),booked:L('geplant','planned'),no:L('nummer','number'),dis:L('kein interesse','not interested'),sl:L('einkaufstermin','shopping date'),rooms:L('zimmer','rooms'),floors:L('etagen','floors'),cap:L('personen je zimmer','people per room')});
+function detail(id){const x=S.i[id];if(!x)return;const fl=FL(),skip=['t','T','c','id','name','title','txt','src','cn'],ttl=x.title||x.name||x.label||x.txt||(x.from?x.from+' → '+x.to:'');
+  const val=(k,v)=>{if(k==='sl')return esc((S.i[v]||{}).name||'–');if(Array.isArray(v))return v.length?v.map(u=>S.m[u]?dn(u):u).map(esc).join(', '):'–';if(typeof v==='boolean')return v?'✓':'✗';if(k==='act'&&S.i[v])return esc(S.i[v].title);if(k==='amt'||k==='cost')return v?eur(v):'–';if(typeof v==='string'){if(/^\d{4}-\d\d-\d\dT/.test(v))return dt(v);if(/^\d{4}-\d\d-\d\d$/.test(v))return dd(v);if(S.m[v])return esc(dn(v));if(k==='addr'&&v)return `<a href="${maps(v)}" target="_blank" rel="noopener">${esc(v)} ↗</a>`}return esc(tr(v))||'–'};
+  $('#sheet').innerHTML=`<div class="row" style="align-items:flex-start"><h3 style="margin:0">${esc(ttl)}</h3><button class="btn s" id="fx" style="font-size:18px;padding:2px 10px">✕</button></div>${EF[x.t]&&(own(x)||x.payer===uid)?`<div style="margin:8px 0"><button class="btn s" data-a="edit" data-id="${id}">✏️ ${L('bearbeiten','edit')}</button></div>`:''}`+Object.entries(x).filter(([k,v])=>!skip.includes(k)&&typeof v!=='object'||Array.isArray(v)&&!skip.includes(k)).map(([k,v])=>{const lab=k==='no'&&Array.isArray(v)?L('abgesagt','declined'):fl[k]||k;return `<div class="row" style="padding:7px 0;border-bottom:1px solid var(--ln);align-items:flex-start"><span class="mu">${esc(lab)}</span><span style="text-align:right">${val(k,v)}</span></div>`}).join('');
+  $('#modal').classList.add('on');$('#fx').onclick=close}
+function switcher(){const my=Object.values(S.i).filter(m=>m.t==='mem'&&m.u===uid&&S.i[m.T]);$('#sheet').innerHTML=`<h3>${L('reise wechseln','switch travel')}</h3>`+my.map(m=>`<div class="card row" data-a="pick" data-id="${m.T}" style="cursor:pointer"><span>${esc(S.i[m.T].av)} <b>${esc(S.i[m.T].name)}</b></span><span class="tag">${m.role}</span></div>`).join('')+`<div class="row"><button class="btn" data-a="home2">← travels</button><button class="btn" id="fx">${L('schließen','close')}</button></div>`;$('#modal').classList.add('on');$('#fx').onclick=close}
+let EFd=0;
+const MODES=()=>['flug','zug','bahn','auto','fahrgemeinschaft','mietwagen'].map(a=>[a,VL()[a]||a]);
+const EX={acc:x=>[{k:'name',l:'name',v:x.name},{k:'addr',l:L('adresse','address'),v:x.addr},{k:'rooms',l:L('anzahl zimmer','number of rooms'),type:'number',v:x.rooms},{k:'floors',l:L('stockwerke','floors'),v:x.floors},{k:'cap',l:L('personen pro zimmer','persons per room'),type:'number',v:x.cap},{k:'from',l:L('von','from'),type:'date',v:x.from},{k:'to',l:L('bis','to'),type:'date',v:x.to},{k:'who',l:L('wer wohnt hier','who stays'),type:'multi',o:mo(),v:x.who||[]}],
+ room:x=>[{k:'name',l:'name',v:x.name},{k:'bld',l:L('gebäude','building'),v:x.bld},{k:'fl',l:L('etage','floor'),v:x.fl},{k:'beds',l:L('betten','beds'),type:'number',v:x.beds}],
+ leg:x=>[{k:'from',l:L('von','from'),v:x.from},{k:'to',l:L('nach','to'),v:x.to},{k:'dir',l:L('art','type'),type:'select',v:x.dir,o:[['an',VL().an],['ab',VL().ab],['vor',VL().vor]]},{k:'mode',l:L('verkehrsmittel','mode'),type:'select',v:x.mode,o:MODES()},{k:'no',l:L('nummer','number'),v:x.no},{k:'when',l:L('abfahrt','departure'),type:'datetime-local',v:x.when},{k:'arr',l:L('ankunft','arrival'),type:'datetime-local',v:x.arr},{k:'dur',l:L('dauer','duration'),v:x.dur},{k:'driver',l:L('fahrer','driver'),type:'select',v:x.driver||'',o:[['','–'],...mo()]},{k:'park',l:L('parkplatz','parking'),v:x.park},{k:'note',l:L('notiz','note'),v:x.note},{k:'p',l:L('wer fährt mit?','who is going?'),type:'multi',o:mo(),v:x.p||[]}],
+ bag:x=>[{k:'label',l:L('gepäckart','luggage type'),type:'select',v:x.label,o:[...new Set([x.label,...bagtypes()])].map(a=>[a,a])},{k:'info',l:'info',type:'area',v:x.info},{k:'who',l:L('für','for'),type:'select',v:x.who,o:[['all',L('alle','everyone')],...mo()]}],
+ place:x=>[{k:'name',l:'name',v:x.name},{k:'kind',l:L('art','kind'),type:'select',v:x.kind,o:['supermarkt','parkplatz','flughafen','bahnhof','sonstiges'].map(a=>[a,VL()[a]||a])},{k:'addr',l:L('adresse','address'),v:x.addr}],
+ exp:x=>[{k:'title',l:L('wofür?','what for?'),v:x.title},{k:'amt',l:L('betrag (€)','amount (€)'),type:'number',v:x.amt},{k:'cat',l:L('kostenart','category'),type:'select',v:x.cat,o:[...new Set([x.cat,...cats()])].map(c=>[c,c])},{k:'payer',l:L('bezahlt von','paid by'),type:'select',v:x.payer,o:mo()},{k:'split',l:L('aufteilen auf','split between'),type:'multi',o:mo(),v:x.split||[]}],
+ calc:x=>[{k:'title',l:L('bezeichnung','label'),v:x.title},{k:'amt',l:L('betrag (€)','amount (€)'),type:'number',v:x.amt},{k:'cat',l:L('rubrik','section'),type:'select',v:x.cat,o:CC()},{k:'mode',l:L('berechnung','basis'),type:'select',v:x.mode,o:CM()}],
+ pack:x=>[{k:'txt',l:L('gegenstand','item'),v:x.txt},{k:'qty',l:L('anzahl','quantity'),type:'number',v:x.qty}],
+ cat:x=>[{k:'name',l:'name',v:x.name}],
+ shopdate:x=>[{k:'name',l:'name',v:x.name},{k:'when',l:L('datum & uhrzeit','date & time'),type:'datetime-local',v:x.when}]};
+const EF={act:x=>[{k:'title',l:L('titel','title'),v:x.title},{k:'desc',l:L('beschreibung','description'),type:'area',v:x.desc},{k:'when',l:L('datum & uhrzeit','date & time'),type:'datetime-local',v:x.when},{k:'dl',l:L('abstimmen bis','vote until'),type:'datetime-local',v:x.dl},{k:'fd',l:L('zu-/absage bis','respond by'),type:'datetime-local',v:x.fd},{k:'cost',l:L('kosten pro person (€)','cost per person (€)'),type:'number',v:x.cost||''}],
+ todo:x=>[{k:'title',l:L('aufgabe','task'),v:x.title},{k:'to',l:L('zuordnen an','assign to'),type:'select',v:x.to,o:mo()},{k:'due',l:L('fällig am','due'),type:'date',v:x.due}],
+ shop:x=>[{k:'title',l:L('produkt','product'),v:x.title},{k:'qty',l:L('menge','amount'),v:x.qty},{k:'sl',l:L('einkaufstermin','shopping date'),type:'select',v:x.sl||'',o:[['',L('ohne termin','no date')],...list('shopdate').map(d=>[d.id,d.name])]}]};
+Object.assign(EF,EX);
+const shopItems=()=>list('shop').filter(x=>curSL==='all'||(x.sl||'')===(curSL==='none'?'':curSL));
+function shopView(){const D=list('shopdate').sort((a,b)=>(a.when||'').localeCompare(b.when||'')),it=shopItems().sort((a,b)=>(a.done?1:0)-(b.done?1:0)),isD=D.some(d=>d.id===curSL);
+ return `<div class="card"><select data-a="sl"><option value="all">${L('alle listen','all lists')}</option><option value="none" ${curSL==='none'?'selected':''}>${L('ohne termin','no date')}</option>${D.map(d=>`<option value="${d.id}" ${curSL===d.id?'selected':''}>${esc(d.name)} · ${dt(d.when)}</option>`).join('')}</select></div>
+ <div class="row wr" style="margin-bottom:9px"><button class="btn s" data-a="newdate">+ ${L('einkaufstermin','shopping date')}</button>${it.length?`<button class="btn s" data-a="shopreset">${L('alle zurücksetzen','reset all')}</button>`:''}${lead()&&it.length?`<button class="btn s" data-a="shopclear">${L('liste leeren','clear list')}</button>`:''}${lead()&&isD?`<button class="btn s" data-a="deldate">${L('termin löschen','delete date')}</button>`:''}</div>`+
+ (it.map(x=>`<div class="card row"><div class="row wr"><button class="chk ${x.done?'on':''}" data-a="buy" data-id="${x.id}">${x.done?'✓':''}</button><div><div class="${x.done?'done':''}">${esc(x.title)} ${x.qty?`<span class="mu">(${esc(x.qty)})</span>`:''}</div><div class="mu">${x.sl&&curSL==='all'&&S.i[x.sl]?`<span class="tag">${esc(S.i[x.sl].name)}</span>`:''}${x.done?L('gekauft von ','bought by ')+esc(dn(x.doneBy)):esc(dn(x.by))}</div></div></div>${own(x)?X(x.id):''}</div>`).join('')||E(L('einkaufsliste leer','shopping list empty')))}
+function lotShow(){const R=list('room').filter(r=>r.acc===acc);$('#sheet').innerHTML=`<div class="row"><h3 style="margin:0">🎲 ${L('vorschlag zimmerverteilung','room proposal')}</h3><button class="btn s" id="fx">✕</button></div>`+R.map(r=>`<div class="card"><b>${esc(r.name)}</b> <span class="mu">${(r.who||[]).length+(LP[r.id]||[]).length}/${r.beds}</span><div class="mu">${[...(r.who||[]).map(u=>esc(dn(u))),...(LP[r.id]||[]).map(u=>'<span class="gold">+ '+esc(dn(u))+'</span>')].join(', ')||'–'}</div></div>`).join('')+`<div class="row wr"><button class="btn" data-a="lotno">${L('ablehnen','reject')}</button><button class="btn" data-a="lotre">🎲 ${L('neu würfeln','reroll')}</button><button class="btn p" data-a="lotok">${L('annehmen','accept')}</button></div>`;$('#modal').classList.add('on');$('#fx').onclick=close}
+const ACT={
+ imp:()=>{$('#sheet').innerHTML=`<div class="row"><h3 style="margin:0">${L('impressum & version','imprint & version')}</h3><button class="btn s" id="fx">✕</button></div><p>travelite · ${L('version','version')} ${VER}</p><p class="mu">${L('angaben gemäß § 5 ddg (vom betreiber zu ergänzen): name, anschrift, e-mail.','information pursuant to § 5 ddg (to be completed by the operator): name, address, email.')}</p>`;$('#modal').classList.add('on');$('#fx').onclick=close},
+ dis:id=>{const x=S.i[id],a=x.dis||[];U(id,{dis:a.includes(uid)?a.filter(u=>u!==uid):[...a,uid],likes:(x.likes||[]).filter(u=>u!==uid)})},
+ edit:id=>{const x=S.i[id],f=EF[x.t];if(!f)return;const fs=f(x);form(L('bearbeiten','edit'),fs,v=>{if(!v[fs[0].k])return false;const d={...v};['cost','amt'].forEach(k=>{if(k in d)d[k]=parseFloat(String(d[k]).replace(',','.'))||0});['beds','qty'].forEach(k=>{if(k in d)d[k]=parseInt(d[k])||1});if('split' in d&&!d.split.length)return false;U(id,d);detail(id);return false})},
+ edittrip:id=>{const t=S.i[id],m=S.i['m_'+id+'_'+uid];if(!m||m.role!=='travellead')return;form(L('reise bearbeiten','edit travel'),[{k:'name',l:'name',v:t.name},{k:'ort',l:L('ort','place'),v:t.ort},{k:'s',l:L('start','start'),type:'date',v:t.s},{k:'e',l:L('ende','end'),type:'date',v:t.e},{k:'av',l:L('titelbild (emoji)','cover (emoji)'),v:t.av}],v=>{if(!v.name||!v.s||!v.e)return false;U(id,v)})},
+ newdate:()=>{const D=list('shopdate');form(L('einkaufstermin','shopping date'),[{k:'name',l:'name'},{k:'when',l:L('datum & uhrzeit','date & time'),type:'datetime-local'},{k:'copy',l:L('liste aus vorherigem einkauf übernehmen','copy list from previous shopping'),type:'select',o:[['','–'],...D.map(d=>[d.id,d.name+' · '+dt(d.when)])]}],v=>{if(!v.name)return false;const id=uidn();P('shopdate',{name:v.name,when:v.when},id);if(v.copy)list('shop').filter(x=>x.sl===v.copy).forEach(x=>P('shop',{title:x.title,qty:x.qty,by:uid,done:false,sl:id}));curSL=id})},
+ deldate:()=>confirm(L('termin löschen? artikel bleiben ohne termin erhalten.','delete date? items stay without date.'))&&(list('shop').filter(x=>x.sl===curSL).forEach(x=>U(x.id,{sl:''})),del(curSL),curSL='all',render()),
+ genrooms:id=>{const a=S.i[id],ex=list('room').filter(r=>r.acc===id).length,fl=(a.floors||'').split(',').map(q=>q.trim()).filter(Boolean),n=parseInt(a.rooms)||0;if(ex>=n)return alert(L('es sind bereits so viele zimmer angelegt','that many rooms already exist'));for(let i=ex;i<n;i++)P('room',{name:L('zimmer ','room ')+(i+1),bld:a.name,fl:fl.length?fl[i%fl.length]:'',beds:parseInt(a.cap)||2,acc:id,who:[]})},
+ lotno:()=>close(),lotre:()=>ACT.lottery(),lotok:()=>{list('room').filter(r=>r.acc===acc).forEach(r=>LP[r.id]&&LP[r.id].length&&U(r.id,{who:[...(S.i[r.id].who||[]),...LP[r.id]]}));close()},
+ calcimp:()=>list('act').filter(a=>ast(a)==='plan'&&a.cost&&!list('calc').some(c=>c.src===a.id)).forEach(a=>P('calc',{cat:'akt',title:a.title,amt:a.cost,mode:'pp',src:a.id})),
+ pick:id=>{close();cur=id;tab='home';render()},home2:()=>{close();cur=null;render()},pkview:id=>{pkAll=id==='1';render()},
+ rsvp:(id,d)=>{const x=S.i[id],k=d.k,o=k==='yes'?'no':'yes',a=x[k]||[];U(id,{[k]:a.includes(uid)?a.filter(u=>u!==uid):[...a,uid],[o]:(x[o]||[]).filter(u=>u!==uid)})},
+ cancel:id=>confirm(L('aktivität canceln?','cancel activity?'))&&U(id,{st:'cancel'}),
+ book:id=>{const x=S.i[id];form(L('einplanen','plan'),[{k:'when',l:L('datum & uhrzeit','date & time'),type:'datetime-local',v:x.when},{k:'fd',l:L('zu-/absage bis','respond by'),type:'datetime-local'},{k:'cost',l:L('kosten pro person (€)','cost per person (€)'),type:'number',v:x.cost||''}],v=>{if(!v.when)return false;U(id,{st:'plan',when:v.when,fd:v.fd,cost:parseFloat(v.cost)||0,yes:[...new Set([...(x.yes||[]),...(x.likes||[])])],no:[...(x.dis||[])]})})},
+ take:id=>U(id,{to:uid}),shopreset:()=>shopItems().forEach(x=>U(x.id,{done:false,doneBy:''})),shopclear:()=>confirm(L('liste leeren?','clear list?'))&&shopItems().forEach(x=>del(x.id)),
+ role:id=>{const m=S.i[id];if(!lead())return;if(m.role==='travellead'&&mems().filter(x=>x.role==='travellead').length<2)return alert(L('mindestens ein travellead nötig','at least one travellead required'));U(id,{role:m.role==='travellead'?'traveller':'travellead'})},
+ cfgbag:()=>form(L('gepäckarten (kommagetrennt)','luggage types (comma separated)'),[{k:'b',l:'',type:'area',v:bagtypes().join(', ')}],v=>{U(cur,{bag:v.b.split(',').map(a=>a.trim()).filter(Boolean)})}),
+ cfgw:()=>{const w=W(),wl=WL();form(L('punkte je aktion','points per action'),Object.keys(wl).map(k=>({k,l:wl[k],type:'number',v:w[k]})),v=>{const o={};Object.keys(wl).forEach(k=>o[k]=parseFloat(v[k])||0);U(cur,{w:o})})},
+ cfgmods:()=>{const keys=[...TABS().filter(t=>!['home','team'].includes(t[0])),...Object.entries(SUBS()).filter(e=>e[0]!=='team').flatMap(([t,l])=>l.map(q=>[t+'.'+q[0],'   ↳ '+t+': '+q[1]]))];form(L('aktive rubriken','active sections'),[{k:'m',l:'',type:'multi',o:keys,v:keys.map(k=>k[0]).filter(k=>!off(k))}],v=>{U(cur,{off:keys.map(k=>k[0]).filter(k=>!v.m.includes(k))})})},
+ add:()=>ADD[tab](),del:id=>del(id),open:id=>{cur=id;tab='home';render()},newtrip:newTrip,
+ join:(id,d)=>{const x=S.i[id],k=d.k,a=x[k]||[],o={[k]:a.includes(uid)?a.filter(u=>u!==uid):[...a,uid]};if(k==='likes')o.dis=(x.dis||[]).filter(u=>u!==uid);U(id,o)},
+ pk:id=>U(id,{done:!S.i[id].done}),
+ buy:id=>{const x=S.i[id];U(id,{done:!x.done,doneBy:x.done?'':uid})},
+ tst:id=>{const o=['offen','läuft','erledigt'],x=S.i[id],s=o[(o.indexOf(x.st)+1)%3];U(id,{st:s,doneBy:s==='erledigt'?uid:''})},
+ goal:(id,d)=>{U(cur,{next:{name:d.n,addr:d.ad}});alert(L('nächstes ziel gesetzt – alle sehen es auf der startseite.','next destination set – everyone sees it on the home screen.'))},
+ settle:()=>{U(cur,{settle:Date.now()});alert(L('ausgleich angefordert – erscheint auf der startseite der schuldner.','settlement requested – shown on debtors\' home screens.'))},
+ kick:id=>confirm(L('reisenden entfernen?','remove traveller?'))&&del(id),
+ vote:id=>{if(mvpEnded())return;put('v_'+cur+'_'+period()+'_'+uid,{t:'vote',T:cur,per:period(),by:uid,for:id,c:Date.now()})},
+ mvpend:()=>confirm(L('mvp-wahl für die ganze reise beenden?','end the mvp vote for the whole trip?'))&&put('cfg_'+cur,{...(S.i['cfg_'+cur]||{}),t:'cfg',T:cur,c:0,ended:true}),
+ mvpopen:()=>put('cfg_'+cur,{...(S.i['cfg_'+cur]||{}),t:'cfg',T:cur,c:0,ended:false}),
+ joincode:()=>form(L('mit reise-code beitreten','join with trip code'),[{k:'c',l:L('code vom travellead','code from travellead')}],v=>{const t=S.i[v.c];if(!t||t.t!=='trip'){alert(L('code nicht gefunden','code not found'));return false}setTimeout(()=>joinFlow(v.c),0)}),
+ newcat:()=>form(L('neue kostenart','new category'),[{k:'name',l:'name'}],v=>{if(!v.name)return false;P('cat',{name:v.name})}),
+ newroom:()=>form(L('zimmer','room'),[{k:'name',l:'name'},{k:'bld',l:L('gebäude','building')},{k:'fl',l:L('etage','floor')},{k:'beds',l:L('betten','beds'),type:'number',v:2}],v=>{const b=parseInt(v.beds);if(!v.name||!(b>0))return false;P('room',{...v,beds:b,acc,who:[]})}),
+ rmdel:id=>del(id),
+ unroom:(id,d)=>U(id,{who:S.i[id].who.filter(u=>u!==d.u)}),
+ lottery:()=>{const R=list('room').filter(r=>r.acc===acc);if(!R.length)return alert(L('fehler: in dieser unterkunft wurden noch keine zimmer angelegt.','error: no rooms have been created for this lodging yet.'));
+  const a=S.i[acc],ass=R.flatMap(r=>r.who||[]),free=(a.who||[]).filter(u=>!ass.includes(u)).sort(()=>Math.random()-.5);
+  if(!free.length)return alert(L('alle reiseteilnehmer sind schon zugeteilt.','everyone is already assigned.'));
+  if(R.reduce((n,r)=>n+Math.max(0,r.beds-(r.who||[]).length),0)<free.length)return alert(L('fehler: zu wenig freie betten für alle nicht zugeteilten personen.','error: not enough free beds for everyone unassigned.'));
+  LP={};let i=0;R.slice().sort(()=>Math.random()-.5).forEach(r=>{LP[r.id]=[];let sp=r.beds-(r.who||[]).length;while(sp-->0&&i<free.length)LP[r.id].push(free[i++])});lotShow()},
+ copyrooms:()=>{const A=list('acc'),i=A.findIndex(a=>a.id===acc);if(i<1)return alert(L('keine vorherige unterkunft','no previous lodging'));const pw=A[i-1].id,pv=list('room').filter(r=>r.acc===pw);pv.forEach(r=>P('room',{name:r.name,bld:r.bld,fl:r.fl,beds:r.beds,acc,who:(r.who||[]).filter(u=>(S.i[acc].who||[]).includes(u))}))},
+ send:()=>{const v=$('#ci').value.trim();if(v)P('msg',{txt:v,by:uid})}
+};
+document.addEventListener('click',e=>{if(sideOpen&&innerWidth<700&&cur&&!e.target.closest('#side,#bs,#modal')){sideOpen=false;render();return}
+  const dc=e.target.closest('.card[data-d]');if(dc&&!e.target.closest('button,a,select,input,summary')){return detail(dc.dataset.d)}
+  const b=e.target.closest('[data-a],[data-t],[data-s],[data-go],#bl,#bt,#bp,#bs,[data-f]');if(!b)return;
+  if(b.id==='bs'){sideOpen=!sideOpen;return render()}
+  if(b.dataset.go){const[gt,gs]=b.dataset.go.split('|');tab=gt;if(gs)subs[gt]=gs;if(innerWidth<700)sideOpen=false;return render()}
+  if(b.id==='bl'){lang=lang==='de'?'en':'de';try{localStorage.setItem('tl',lang)}catch(x){}return render()}
+  if(b.id==='bt')return switcher();if(b.dataset.f){tf=b.dataset.f;return render()}if(b.id==='bp')return profile(true);
+  if(b.dataset.t){const t0=b.dataset.t;if(t0===tab&&subList(t0).length)sc[t0]=!sc[t0];else{tab=t0;sc[t0]=false}return render()}if(b.dataset.s){subs[tab]=b.dataset.s;if(innerWidth<700)sideOpen=false;return render()}
+  if(b.tagName==='SELECT'||b.tagName==='OPTION'||b.tagName==='INPUT')return;e.preventDefault();
+  const a=b.dataset.a;ACT[a]&&ACT[a](b.dataset.id,b.dataset)});
+document.addEventListener('change',e=>{const t=e.target,a=t.dataset.a;if(!a)return;
+  if(a==='acc'){acc=t.value;render()}else if(a==='mode')put('cfg_'+cur,{...(S.i['cfg_'+cur]||{}),t:'cfg',T:cur,mode:t.value,c:0});else if(a==='nm')U(cur,{nm:t.value});else if(a==='sl'){curSL=t.value;render()}else if(a==='cn')U(cur,{cn:parseInt(t.value)||0});
+  else if(a==='assign'&&t.value){const r=S.i[t.value];if((r.who||[]).length<r.beds)U(t.value,{who:[...(r.who||[]),t.dataset.u]});else alert(L('zimmer voll','room is full'))}});
+document.querySelectorAll('.navw nav').forEach(n=>n.addEventListener('scroll',arrows));addEventListener('resize',arrows);
+window.__start=init;
+</script>
+<div id="auth" style="display:none"><form id="af"><div class="logo" style="font-size:34px;text-align:center;margin-bottom:18px"><b>trav</b><i>elite</i></div>
+<label>e-mail</label><input id="ae" type="email" autocomplete="email" required><label>passwort</label><input id="ap" type="password" autocomplete="current-password" minlength="6" required>
+<div class="row"><button class="btn p" type="submit" id="ain">anmelden</button><button class="btn" type="button" id="aup">registrieren</button></div><p id="am"></p></form></div>
+<script>
+/* >>> hier deine werte aus supabase (project settings > api) eintragen <<< */
+const SB_URL='https://rdrvjjtzjmyucoukcrwi.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkcnZqanR6am15dWNvdWtjcndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MzIzMzQsImV4cCI6MjEwNzEwODMzNH0.x5-zbz_aFk7_rTtBYZhfd5R5njFdNuG8-dS-hYhEjro';
+(async()=>{
+  const $a=id=>document.getElementById(id),sb=supabase.createClient(SB_URL,SB_KEY),box=$a('auth'),msg=t=>$a('am').textContent=t;
+  const begin=session=>{
+    box.style.display='none';const uid=session.user.id,email=session.user.email;
+    window.claude={use:async k=>k==='user'?{id:async()=>uid,me:async()=>({name:'',email})}:{collection:n=>({
+      onSnapshot:cb=>{const load=async()=>{const {data,error}=await sb.from(n).select('*');if(error){console.error(error);return}cb({docs:data.map(r=>({id:r.id,data:()=>r.data}))})};load();let tm;
+        sb.channel(n+'-ch').on('postgres_changes',{event:'*',schema:'public',table:n},()=>{clearTimeout(tm);tm=setTimeout(load,150)}).subscribe()},
+      doc:id=>({
+        set:async d=>{const row=n==='items'?{id,trip:d.T||id,data:d}:{id,data:d};
+          let r=await sb.from(n).update(n==='items'?{data:d,trip:row.trip}:{data:d}).eq('id',id).select('id');
+          if(!r.error&&(!r.data||!r.data.length))r=await sb.from(n).insert(row);
+          if(r.error){console.error(r.error);alert(r.error.message)}},
+        delete:async()=>{const {error}=await sb.from(n).delete().eq('id',id);if(error){console.error(error);alert(error.message)}}})})}};
+    window.__start()};
+  const {data:{session}}=await sb.auth.getSession();
+  if(session)return begin(session);
+  box.style.display='flex';
+  $a('af').onsubmit=async e=>{e.preventDefault();msg('…');const {data,error}=await sb.auth.signInWithPassword({email:$a('ae').value,password:$a('ap').value});if(error)return msg(error.message);begin(data.session)};
+  $a('aup').onclick=async()=>{msg('…');const {data,error}=await sb.auth.signUp({email:$a('ae').value,password:$a('ap').value});if(error)return msg(error.message);data.session?begin(data.session):msg('bestätigungs-mail gesendet – bitte link öffnen, dann anmelden.')};
+})();
+</script>
+</body></html>
